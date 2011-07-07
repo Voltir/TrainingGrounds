@@ -2,7 +2,7 @@
 #include <vector>
 
 //using ComponentId = int;
-typedef int ComponentId ;
+typedef int ComponentId;
 
 class EntitySystem;
 
@@ -21,7 +21,6 @@ public:
 	template<typename ComponentType>
 	void add(ComponentType* comp);
 
-private:
 	EntitySystem* mSystem;
 	std::map<ComponentId, Component*> mComponents;
 };
@@ -34,7 +33,11 @@ public:
 	template<typename ComponentType>
 	EntitySystemView getWith();
 
-protected:
+	void registerComponent(const ComponentId id, Entity* e)
+	{
+		mComponentMap.insert(std::pair<ComponentId,Entity*>(id,e));
+	}
+
 	std::multimap<ComponentId,Entity*> mComponentMap;
 };
 
@@ -50,10 +53,6 @@ public:
 		}
 	}
 
-	void registerComponent(const ComponentId id, Entity* e)
-	{
-		EntitySystemView::mComponentMap.insert(std::pair<ComponentId,Entity*>(id,e));
-	}
 };
 
 template<typename ComponentType>
@@ -64,8 +63,13 @@ EntitySystemView EntitySystemView::getWith()
 	auto it_pair = mComponentMap.equal_range(ComponentType::componentId);
 	for(auto it = it_pair.first; it != it_pair.second; ++it)
 	{
-		result.push_back(it->second);
-		std::multimap<ComponentId,Entity*> mComponentMap;
+		Entity* e = it->second;
+		result.push_back(e);
+		for(auto it = e->mComponents.begin(); it != e->mComponents.end(); ++it)
+		{
+			result.registerComponent(it->first, e);
+		}
+		
 	}
 
 	return result;
