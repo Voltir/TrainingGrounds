@@ -4,6 +4,7 @@
 //using ComponentId = int;
 typedef int ComponentId;
 
+
 class EntitySystem;
 
 struct Component 
