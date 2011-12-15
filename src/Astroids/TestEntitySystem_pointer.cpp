@@ -3,7 +3,7 @@
 #include <iostream>
 #include <string>
 
-#include "EntitySystem.h"
+#include "EntitySystem_pointer.h"
 
 using namespace std;
 
