@@ -21,6 +21,16 @@ TEST(EntitySystemTest,Index)
 	cout << Index<string>::index << endl;
 }
 
+TEST(EntitySystemTest,What)
+{
+	Index<Baz, Bar, Foo> define;
+	define.init();
+	Whatz what;
+
+	cout << what.foo<Foo>() << endl;
+	cout << what.foo<Bar>() << endl;
+	cout << what.foo<Baz>() << endl;
+}
 TEST(EntitySystemTest,Crazy)
 {
 	Crazy<Foo,Bar,Baz, Foo, Foo , Foo> c;

@@ -29,6 +29,12 @@ struct Index<Input,Rest...>
 	}
 };
 
+class Whatz
+{
+public:
+	template<typename Thing>
+	int foo() { return Index<Thing>::index; }
+};
 
 struct Foo
 {
