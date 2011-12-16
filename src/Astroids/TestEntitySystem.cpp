@@ -8,9 +8,22 @@
 
 using namespace std;
 
+TEST(EntitySystemTest,Index)
+{
+	Index<Foo, Bar, Baz, int, double, float> define;
+	define.init();
+	cout << Index<float>::index << endl;
+	cout << Index<Foo>::index << endl;
+	cout << Index<Bar>::index << endl;
+	cout << Index<Baz>::index << endl;
+	cout << Index<int>::index << endl;
+	cout << Index<double>::index << endl;
+	cout << Index<string>::index << endl;
+}
+
 TEST(EntitySystemTest,Crazy)
 {
-	Crazy<Foo,Bar,Baz> c;
+	Crazy<Foo,Bar,Baz, Foo, Foo , Foo> c;
 	c.func();
 }
 
@@ -25,10 +38,12 @@ TEST(EntitySystemTest,EntityViewTest)
 		ASSERT_TRUE(v.size() == i+1);
 	}
 
+	/*
 	for(eid e: view)
 	{
 		cout << e << endl;
 	}
+	*/
 	//ASSERT_TRUE(v.modified());
 }
 

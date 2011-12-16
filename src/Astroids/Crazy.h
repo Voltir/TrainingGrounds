@@ -2,6 +2,34 @@
 #include <iostream>
 using namespace std;
 
+template <typename... Input> struct Index;
+
+template <typename Head> struct Index<Head>
+{
+	static int index;
+
+	template<int N>
+	void __generate() { index = N; }	
+};
+
+template<typename Head>
+int Index<Head>::index = -1;
+
+template<typename Input, typename... Rest> 
+struct Index<Input,Rest...>
+{
+	void init() { __generate<0>(); }
+
+	template<int N>
+	void __generate()
+	{
+		Index<Input>::index = N;
+		Index<Rest...> rest;
+		rest.__generate<N+1>();
+	}
+};
+
+
 struct Foo
 {
 	static const char* name;
@@ -29,6 +57,7 @@ class Crazy
 public:
 	void func()
 	{
+		cout << "Never! " << endl;
 	}
 };
 
