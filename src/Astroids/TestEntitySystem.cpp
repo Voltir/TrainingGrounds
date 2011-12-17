@@ -3,10 +3,21 @@
 #include <iostream>
 #include <string>
 
+#include "Component.h"
 #include "EntitySystem.h"
 #include "Crazy.h"
 
 using namespace std;
+struct FooComponent : public Component
+{
+	int foo_data;
+};
+
+class FooSystem
+{
+public:
+	typedef FooComponent Component;
+};
 
 TEST(EntitySystemTest,Index)
 {
@@ -37,16 +48,53 @@ TEST(EntitySystemTest,Crazy)
 	c.func();
 }
 
+TEST(EntitySystemTest,EntityAddTest)
+{
+	Index<FooSystem, Foo> define;
+	EntitySystem es(define);
+
+	es.newEntity();
+	es.newEntity();
+	es.newEntity();
+
+	FooComponent* f = es.get<FooSystem>(0);
+	cout << "A Wat " << f << endl;
+
+	FooComponent* fc = new FooComponent();
+	fc->foo_data = 42;
+	es.set<FooSystem>(0,fc);
+
+	for(int i=0;i<20000000;++i)
+	{	
+		if(es.has<FooSystem>(0))
+			FooComponent* ff = es.get<FooSystem>(0);
+		//Component* ff = es.fast<FooSystem>(0);
+	}
+	FooComponent* ff = es.get<FooSystem>(0);
+	cout << "B Wat " << ff->foo_data << endl;
+	cout << es.has<FooSystem>(0) << " " << es.has<FooSystem>(1) << endl;
+
+	vector<int> test;
+	test.push_back(42);	
+	for(int i=0;i<20000000;++i)
+	{
+		int a = test[0];	
+	}
+}
+
 TEST(EntitySystemTest,EntityViewTest)
 {
-	EntitySystem es;//(10);
-	EntityView v = es.view();
+	Index<Baz, Bar, Foo> define;
+	EntitySystem es(define);//(10);
 
-	for(int i=0; i<10;++i)
+	//EntityView v = es.view();
+
+	/*for(int i=0; i<10;++i)
 	{
 		es.newEntity();
 		ASSERT_TRUE(v.size() == i+1);
 	}
+	*/
 
 	/*
 	for(eid e: view)
