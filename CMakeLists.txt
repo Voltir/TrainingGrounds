@@ -5,6 +5,7 @@ project(TrainingGrounds)
 set(CMAKE_CXX_FLAGS "-std=c++0x")
 #set(CMAKE_BUILD_TYPE Release)
 
+find_package(Boost REQUIRED)
 #For Gtest
 include_directories(${TrainingGrounds_SOURCE_DIR}/thirdparty/gtest-1.6.0/include)
 

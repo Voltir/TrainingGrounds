@@ -57,25 +57,41 @@ TEST(EntitySystemTest,BasicEntityTest)
 	cout << ff->foo_data << endl;
 }
 
+TEST(EntitySystemTest,CrazyQueryTest)
+{
+	_and<Foo,Bar,Baz> and_query;
+	_or<Foo,Bar,Baz> or_query;
+	_not<Foo> not_query;
+
+	CrazyQuery c;
+
+	c.what<_not<Foo>>();
+	c.what<Foo>();
+}
+/*
 TEST(EntitySystemTest,EntityViewTest)
 {
-	Index<Baz, Bar, Foo> define;
-	EntitySystem es(define);//(10);
+	Index<FooSystem, Foo> define;
+	EntitySystem es(define);
+	
+	es.add(5); //want to call it create
 
-	//EntityView v = es.view();
+	//Views are intended to be long lived objects that track the 
+	//underlying entity system
 
-	/*for(int i=0; i<10;++i)
+	View all_entities = es.view();
+
+	for(int eid : all_entities)
 	{
-		es.newEntity();
-		ASSERT_TRUE(v.size() == i+1);
+		es.set<FooSystem>(eid,new FooComponent());
 	}
-	*/
 
-	/*
-	for(eid e: view)
+	View missing_foo = es.view<_not<FooSystem>>();
+
+	es.add(10); //want to call it create
+
+	for(int eid : missing_foo)
 	{
-		cout << e << endl;
+		es.set<FooSystem>(eid,new FooComponent());
 	}
-	*/
-	//ASSERT_TRUE(v.modified());
-}
+}*/

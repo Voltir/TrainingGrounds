@@ -6,7 +6,7 @@ class EntitySystem;
 class EntityView;
 class Component;
 class NullComponent;
-
+class View;
 
 class EntitySystem
 {
@@ -28,7 +28,8 @@ public:
 	template<typename SystemType>
 	bool has(int _entity, SystemType* unused=0);
 
-	EntityView view() const;
+	//template<typename... Query>
+	//View view() const;
 
 private:
 	int m_count;

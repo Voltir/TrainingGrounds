@@ -3,7 +3,7 @@
 set(CMAKE_CXX_FLAGS "-std=c++0x")
 
 add_executable(TestEntitySystem_pointer TestEntitySystem_pointer.cpp)
-add_executable(TestEntitySystem TestEntitySystem.cpp)
+add_executable(TestEntitySystem TestEntitySystem.cpp TestView.cpp)
 
 target_link_libraries(TestEntitySystem_pointer gtest_main)
 target_link_libraries(TestEntitySystem_pointer gtest)
