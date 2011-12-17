@@ -1,7 +1,7 @@
 #pragma once
 #include <iostream>
 using namespace std;
-
+/*
 template <typename... Input> struct Index;
 
 template <typename Head> struct Index<Head>
@@ -35,6 +35,7 @@ public:
 	template<typename Thing>
 	int foo() { return Index<Thing>::index; }
 };
+*/
 
 struct Foo
 {

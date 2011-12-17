@@ -23,63 +23,38 @@ TEST(EntitySystemTest,Index)
 {
 	Index<Foo, Bar, Baz, int, double, float> define;
 	define.init();
-	cout << Index<float>::index << endl;
-	cout << Index<Foo>::index << endl;
-	cout << Index<Bar>::index << endl;
-	cout << Index<Baz>::index << endl;
-	cout << Index<int>::index << endl;
-	cout << Index<double>::index << endl;
-	cout << Index<string>::index << endl;
+
+	ASSERT_EQ(Index<float>::index,5);
+	ASSERT_EQ(Index<Foo>::index,0);
+	ASSERT_EQ(Index<Bar>::index,1);
+	ASSERT_EQ(Index<Baz>::index,2);
+	ASSERT_EQ(Index<int>::index,3);
+	ASSERT_EQ(Index<string>::index,-1);
 }
 
-TEST(EntitySystemTest,What)
-{
-	Index<Baz, Bar, Foo> define;
-	define.init();
-	Whatz what;
-
-	cout << what.foo<Foo>() << endl;
-	cout << what.foo<Bar>() << endl;
-	cout << what.foo<Baz>() << endl;
-}
-TEST(EntitySystemTest,Crazy)
-{
-	Crazy<Foo,Bar,Baz, Foo, Foo , Foo> c;
-	c.func();
-}
-
-TEST(EntitySystemTest,EntityAddTest)
+TEST(EntitySystemTest,BasicEntityTest)
 {
 	Index<FooSystem, Foo> define;
 	EntitySystem es(define);
 
-	es.newEntity();
-	es.newEntity();
-	es.newEntity();
+	es.add(1);
 
-	FooComponent* f = es.get<FooSystem>(0);
-	cout << "A Wat " << f << endl;
-
+	ASSERT_FALSE(es.has<FooSystem>(0));
+	
 	FooComponent* fc = new FooComponent();
 	fc->foo_data = 42;
 	es.set<FooSystem>(0,fc);
+	
+	ASSERT_TRUE(es.has<FooSystem>(0));
+	ASSERT_EQ(es.get<FooSystem>(0)->foo_data,42);
 
+	FooComponent* ff;
 	for(int i=0;i<20000000;++i)
 	{	
-		if(es.has<FooSystem>(0))
-			FooComponent* ff = es.get<FooSystem>(0);
-		//Component* ff = es.fast<FooSystem>(0);
+		if(es.has<FooSystem>(0) && i%2==1)
+			ff = es.get<FooSystem>(0);
 	}
-	FooComponent* ff = es.get<FooSystem>(0);
-	cout << "B Wat " << ff->foo_data << endl;
-	cout << es.has<FooSystem>(0) << " " << es.has<FooSystem>(1) << endl;
-
-	vector<int> test;
-	test.push_back(42);	
-	for(int i=0;i<20000000;++i)
-	{
-		int a = test[0];	
-	}
+	cout << ff->foo_data << endl;
 }
 
 TEST(EntitySystemTest,EntityViewTest)
@@ -104,27 +79,3 @@ TEST(EntitySystemTest,EntityViewTest)
 	*/
 	//ASSERT_TRUE(v.modified());
 }
-
-/*
-TEST(EntitySystemTest,Foo)
-{
-	EntitySystem es(10);
-
-	for(int i=0; i<10;++i)
-	{
-		eid e = es.newEntity();
-		es.bind<SystemA::component>(e,comp);
-	}
-
-	EntityViewFilter evf((SystemA||SystemB)&&SystemC);
-	EntityView v = es.view(evf);
-	for(eid e : view)
-	{
-		if(es.has<SystemA>(e))
-		{
-			SystemA::component& foo = es.get<SystemA>(e);
-		}
-		SystemC::component& bar = es.get<SystemC>(e);
-	}
-}
-*/

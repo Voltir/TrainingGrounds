@@ -1,13 +1,12 @@
 #include <iostream>
 #include <vector>
+#include "Index.h"
 
 class EntitySystem;
 class EntityView;
 class Component;
 class NullComponent;
 
-template <typename... Inputs>
-class Index;
 
 class EntitySystem
 {
@@ -18,7 +17,7 @@ public:
 	template <typename... Inputs>
 	EntitySystem(Index<Inputs...> index);
 	
-	void newEntity();
+	void add(int ammount);
 
 	template<typename SystemType>
 	typename SystemType::Component* get(int _entity, SystemType* unused=0);
@@ -49,6 +48,19 @@ EntitySystem::EntitySystem(Index<Inputs...> index)
 	m_component_data = new std::vector<Component*>[m_num_systems];
 }
 
+void
+EntitySystem::add(int amount)
+{
+	m_count += amount;
+	for(int i=0; i<m_num_systems; ++i)
+	{
+		for(int j=0; j<amount; ++j)
+		{
+			m_component_data[i].push_back(m_null);
+		}
+	}
+}
+
 template<typename SystemType>
 typename SystemType::Component*
 EntitySystem::get(int _entity, SystemType* unused)
@@ -58,16 +70,6 @@ EntitySystem::get(int _entity, SystemType* unused)
 	return static_cast<typename SystemType::Component*>(
 		m_component_data[Index<SystemType>::index][_entity]);
 }
-
-template<typename SystemType>
-bool
-EntitySystem::has(int _entity, SystemType* unused)
-{
-	//assert(0 <= Index<SystemType>::index);
-	//assert(_entity < m_count);
-	return m_component_data[Index<SystemType>::index][_entity] != m_null;
-}
-
 
 template<typename SystemType>
 void
@@ -82,15 +84,17 @@ EntitySystem::set(int _entity, typename SystemType::Component* component)
 	m_component_data[Index<SystemType>::index][_entity] = component;
 }
 
-void
-EntitySystem::newEntity()
+template<typename SystemType>
+bool
+EntitySystem::has(int _entity, SystemType* unused)
 {
-	m_count += 1;
-	for(int i=0; i<m_num_systems; ++i)
-	{
-		m_component_data[i].push_back(m_null);
-	}
+	assert(0 <= Index<SystemType>::index);
+	assert(_entity < m_count);
+	return m_component_data[Index<SystemType>::index][_entity] != m_null;
 }
+
+
+
 
 class EntityView
 {
