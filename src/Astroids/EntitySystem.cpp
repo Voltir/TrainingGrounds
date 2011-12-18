@@ -1,4 +1,8 @@
 #include "EntitySystem.h"
+#include <iostream>
+
+using namespace std;
+
 namespace Entity
 {
 
@@ -17,6 +21,7 @@ EntitySystem::add(int amount)
 	//TODO for each...
 	for(int i=0; i<m_subscribers.size(); ++i)
 	{
+		cout << "omg wat" << m_subscribers[i] << endl;
 		m_subscribers[i]->publish();
 	}
 }

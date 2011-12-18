@@ -1,28 +1,12 @@
 #pragma once
 #include <boost/iterator/iterator_facade.hpp>
-
 #include "EntitySystemInterface.h"
+#include "QueryPredicates.h"
 
 namespace Entity
 {
 
-template<typename QueryPredicate>
-class View : public ComponentSubscriber
-{
-public:
-	static int size() { return m_size; }
-	virtual void publish() { m_size += 1; }
-
-private:
-	static int m_size;
-};
-
-
-template<typename QueryPredicate>
-int View<QueryPredicate>::m_size = 0;
-
-
-
+class EntitySystem;
 
 class ViewIterator
 	: public boost::iterator_facade<
@@ -50,15 +34,36 @@ private:
 	int dereference() const { return m_count; }
 };
 
-/*class View
+template<typename QueryPredicate>
+class View : public ComponentSubscriber
 {
-public:
-	//void add();
-	//void remove();
+friend class EntitySystem;
 
-	ViewIterator begin() { return ViewIterator(); }
-	ViewIterator end() { return ViewIterator(10); }
+public:
+	View(const EntitySystem* es);
+
+	int size() { return m_size; }
+
+	virtual void publish() { m_size += 1; }
+	
+	ViewIterator begin() { return ViewIterator(0); }
+	ViewIterator end() { return ViewIterator(m_size); }
+
 private:
-};*/
+	const EntitySystem* m_es;
+	int m_size;
+};
+
+template<typename QueryPredicate>
+View<QueryPredicate>::View(const EntitySystem* es)
+	: m_es(es)
+{
+	m_size = 0;
+	//for(int i=0; i<es->size();++i)
+	//{
+	//	if(QueryPredicate::evaluate(es,i))
+	//		m_size += 1;
+	//}
+}
 
 } //namespace Entity

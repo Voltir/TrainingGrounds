@@ -76,7 +76,7 @@ TEST(EntitySystemTest,BasicEntityTest)
 
 TEST(EntitySystemTest,CrazyQuery)
 {
-/*	Index<FooSystem, BarSystem, BazSystem> define;
+	Index<FooSystem, BarSystem, BazSystem> define;
 	EntitySystem es(define);
 	es.add(1);
 	
@@ -86,11 +86,36 @@ TEST(EntitySystemTest,CrazyQuery)
 	cout << "OMG: " << 
 		w.query<_and<_has<BarSystem>,_not<_has<FooSystem>>>>(es) << endl;
 
-	auto fooz = es.query<BarSystem>();
+	//auto fooz = es.query<BarSystem>();
 	es.add(1);
 	es.add(1);
-	cout << "Fooz: " << fooz.size() << endl;
+	//cout << "Fooz: " << fooz->size() << endl;
 	es.add(1);
-	cout << "Fooz: " << fooz.size() << endl;
-*/
+	//cout << "Fooz: " << fooz->size() << endl;
+	//delete fooz;
+}
+
+TEST(EntitySystemTest,CrazyQuery2)
+{
+	Index<FooSystem, BarSystem, BazSystem> define;
+	EntitySystem es(define);
+	es.add(1);
+	es.add(1);
+	es.add(1);
+	es.add(1);
+	es.add(1);
+	
+	es.set<BarSystem>(0,new FooComponent());
+
+	Whatz w;
+	cout << "OMG: " << 
+		w.query<_and<_has<BarSystem>,_not<_has<FooSystem>>>>(es) << endl;
+
+	//auto fooz = es.query<BarSystem>();
+	es.add(1);
+	es.add(1);
+	//cout << "Fooz: " << fooz->size() << endl;
+	es.add(1);
+	//cout << "Fooz: " << fooz->size() << endl;
+
 }
