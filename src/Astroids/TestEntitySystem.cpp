@@ -6,6 +6,7 @@
 #include "Component.h"
 #include "EntitySystem.h"
 #include "Crazy.h"
+//TODO: Define a constrctor for Index with a single systme...
 
 using namespace std;
 struct FooComponent : public Component
@@ -14,6 +15,18 @@ struct FooComponent : public Component
 };
 
 class FooSystem
+{
+public:
+	typedef FooComponent Component;
+};
+
+class BarSystem
+{
+public:
+	typedef FooComponent Component;
+};
+
+class BazSystem
 {
 public:
 	typedef FooComponent Component;
@@ -34,7 +47,7 @@ TEST(EntitySystemTest,Index)
 
 TEST(EntitySystemTest,BasicEntityTest)
 {
-	Index<FooSystem, Foo> define;
+	Index<FooSystem, BarSystem> define;
 	EntitySystem es(define);
 
 	es.add(1);
@@ -57,41 +70,15 @@ TEST(EntitySystemTest,BasicEntityTest)
 	cout << ff->foo_data << endl;
 }
 
-TEST(EntitySystemTest,CrazyQueryTest)
+TEST(EntitySystemTest,CrazyQuery)
 {
-	_and<Foo,Bar,Baz> and_query;
-	_or<Foo,Bar,Baz> or_query;
-	_not<Foo> not_query;
-
-	CrazyQuery c;
-
-	c.what<_not<Foo>>();
-	c.what<Foo>();
-}
-/*
-TEST(EntitySystemTest,EntityViewTest)
-{
-	Index<FooSystem, Foo> define;
+	Index<FooSystem, BarSystem, BazSystem> define;
 	EntitySystem es(define);
+	es.add(1);
 	
-	es.add(5); //want to call it create
+	es.set<BarSystem>(0,new FooComponent());
 
-	//Views are intended to be long lived objects that track the 
-	//underlying entity system
-
-	View all_entities = es.view();
-
-	for(int eid : all_entities)
-	{
-		es.set<FooSystem>(eid,new FooComponent());
-	}
-
-	View missing_foo = es.view<_not<FooSystem>>();
-
-	es.add(10); //want to call it create
-
-	for(int eid : missing_foo)
-	{
-		es.set<FooSystem>(eid,new FooComponent());
-	}
-}*/
+	Whatz w;
+	cout << "OMG: " << 
+		w.query<_and<_has<BarSystem>,_not<_has<FooSystem>>>>(es) << endl;
+}

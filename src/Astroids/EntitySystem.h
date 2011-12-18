@@ -11,8 +11,6 @@ class View;
 class EntitySystem
 {
 
-friend class EntityView;
-
 public:
 	template <typename... Inputs>
 	EntitySystem(Index<Inputs...> index);
@@ -26,7 +24,7 @@ public:
 	void set(int _entity, typename SystemType::Component* component);
 
 	template<typename SystemType>
-	bool has(int _entity, SystemType* unused=0);
+	bool has(int _entity, SystemType* unused=0) const;
 
 	//template<typename... Query>
 	//View view() const;
@@ -87,30 +85,9 @@ EntitySystem::set(int _entity, typename SystemType::Component* component)
 
 template<typename SystemType>
 bool
-EntitySystem::has(int _entity, SystemType* unused)
+EntitySystem::has(int _entity, SystemType* unused) const
 {
 	assert(0 <= Index<SystemType>::index);
 	assert(_entity < m_count);
 	return m_component_data[Index<SystemType>::index][_entity] != m_null;
 }
-
-
-
-
-class EntityView
-{
-public:
-	EntityView(const EntitySystem& es) : m_es(es) {}
-	int size() { return m_es.m_count; } 
-
-private:
-	const EntitySystem& m_es;
-};
-
-EntityView
-EntitySystem::view() const
-{
-	//EntityView result(*this);
-	//return std::move<EntityView>(result);
-	return EntityView(*this);
-};

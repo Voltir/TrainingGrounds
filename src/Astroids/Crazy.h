@@ -1,6 +1,9 @@
 #pragma once
 #include <iostream>
 using namespace std;
+
+class EntitySystem;
+
 /*
 template <typename... Input> struct Index;
 
@@ -36,6 +39,68 @@ public:
 	int foo() { return Index<Thing>::index; }
 };
 */
+
+template <typename SystemType>
+struct _has
+{
+	static bool evaluate(const EntitySystem& es)
+	{
+		return es.has<SystemType>(0);
+	}
+};
+
+template <typename PredicateType>
+struct _not
+{
+	static bool evaluate(const EntitySystem& es)
+	{
+		return !PredicateType::evaluate(es);
+	}
+};
+
+template <typename... Inputs>
+class _and
+{
+public:
+	static bool evaluate(const EntitySystem& es) { }
+};
+
+template <typename Head, typename... Tail>
+class _and<Head,Tail...>
+{
+public:
+	static bool evaluate(const EntitySystem& es) 
+	{
+		//_and<Tail...> rest;
+		return Head::evaluate(es) && _and<Tail...>::evaluate(es);
+	}
+};
+
+template <typename Head>
+class _and<Head>
+{
+public:
+	static bool evaluate(const EntitySystem& es) 
+	{
+		return Head::evaluate(es);
+	}
+};
+
+
+class Whatz
+{
+public:
+	template <typename QueryType>
+	bool query(const EntitySystem& es) 
+	{
+		return QueryType::evaluate(es);
+	}
+};
+
+
+
+
+
 
 struct Foo
 {
