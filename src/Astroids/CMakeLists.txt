@@ -2,8 +2,12 @@
 
 set(CMAKE_CXX_FLAGS "-std=c++0x")
 
+set(ENTITY_CPP_FILES
+	"EntitySystem.cpp"
+)
+
 add_executable(TestEntitySystem_pointer TestEntitySystem_pointer.cpp)
-add_executable(TestEntitySystem TestEntitySystem.cpp TestView.cpp)
+add_executable(TestEntitySystem TestEntitySystem.cpp TestView.cpp ${ENTITY_CPP_FILES})
 
 target_link_libraries(TestEntitySystem_pointer gtest_main)
 target_link_libraries(TestEntitySystem_pointer gtest)

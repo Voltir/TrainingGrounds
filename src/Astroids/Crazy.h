@@ -1,8 +1,8 @@
 #pragma once
 #include <iostream>
 using namespace std;
+using namespace Entity;
 
-class EntitySystem;
 
 /*
 template <typename... Input> struct Index;
