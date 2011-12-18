@@ -59,33 +59,37 @@ struct _not
 };
 
 template <typename... Inputs>
-class _and
+struct _and
 {
-public:
 	static bool evaluate(const EntitySystem& es) { }
 };
 
 template <typename Head, typename... Tail>
-class _and<Head,Tail...>
+struct _and<Head,Tail...>
 {
-public:
-	static bool evaluate(const EntitySystem& es) 
+	static bool evaluate(const EntitySystem& es)
 	{
-		//_and<Tail...> rest;
 		return Head::evaluate(es) && _and<Tail...>::evaluate(es);
 	}
 };
 
 template <typename Head>
-class _and<Head>
+struct _and<Head>
 {
-public:
 	static bool evaluate(const EntitySystem& es) 
 	{
 		return Head::evaluate(es);
 	}
 };
 
+struct test
+{
+	template <typename Foo>
+	static bool testr(const Foo& f)
+	{
+		return f.test();
+	}
+};
 
 class Whatz
 {
