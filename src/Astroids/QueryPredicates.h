@@ -5,17 +5,17 @@ namespace Entity
 
 class EntitySystem;
 
+//Has Predicate -- this is used to directly wrap a SystemType
 template <typename SystemType>
 struct _has
 {
-
 	static bool evaluate(const EntitySystem* es, int eid)
 	{
 		return es->has<SystemType>(eid);
 	}
-
 };
 
+//Not Predicate
 template <typename PredicateType>
 struct _not
 {
@@ -25,7 +25,8 @@ struct _not
 	}
 };
 
-template <typename... Inputs>
+//And Predicate
+template <typename... Predicates>
 struct _and
 {
 	static bool evaluate(const EntitySystem* es, int eid) { }
