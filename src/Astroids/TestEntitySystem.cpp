@@ -6,9 +6,12 @@
 #include "Component.h"
 #include "EntitySystem.h"
 #include "Crazy.h"
+//#include "View.h"
 //TODO: Define a constrctor for Index with a single systme...
 
 using namespace std;
+using namespace Entity;
+
 struct FooComponent : public Component
 {
 	int foo_data;
@@ -31,6 +34,7 @@ class BazSystem
 public:
 	typedef FooComponent Component;
 };
+
 
 TEST(EntitySystemTest,Index)
 {
@@ -81,4 +85,37 @@ TEST(EntitySystemTest,CrazyQuery)
 	Whatz w;
 	cout << "OMG: " << 
 		w.query<_and<_has<BarSystem>,_not<_has<FooSystem>>>>(es) << endl;
+
+	//auto fooz = es.query<BarSystem>();
+	es.add(1);
+	es.add(1);
+	//cout << "Fooz: " << fooz->size() << endl;
+	es.add(1);
+	//cout << "Fooz: " << fooz->size() << endl;
+	//delete fooz;
+}
+
+TEST(EntitySystemTest,CrazyQuery2)
+{
+	Index<FooSystem, BarSystem, BazSystem> define;
+	EntitySystem es(define);
+	es.add(1);
+	es.add(1);
+	es.add(1);
+	es.add(1);
+	es.add(1);
+	
+	es.set<BarSystem>(0,new FooComponent());
+
+	Whatz w;
+	cout << "OMG: " << 
+		w.query<_and<_has<BarSystem>,_not<_has<FooSystem>>>>(es) << endl;
+
+	//auto fooz = es.query<BarSystem>();
+	es.add(1);
+	es.add(1);
+	//cout << "Fooz: " << fooz->size() << endl;
+	es.add(1);
+	//cout << "Fooz: " << fooz->size() << endl;
+
 }

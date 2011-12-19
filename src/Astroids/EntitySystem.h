@@ -1,12 +1,16 @@
+#pragma once
+
 #include <iostream>
 #include <vector>
 #include "Index.h"
+#include "EntitySystemInterface.h"
+#include "View.h"
+#include <cassert>
 
-class EntitySystem;
-class EntityView;
-class Component;
-class NullComponent;
-class View;
+#define nullptr 0
+
+namespace Entity
+{
 
 class EntitySystem
 {
@@ -15,10 +19,11 @@ public:
 	template <typename... Inputs>
 	EntitySystem(Index<Inputs...> index);
 	
-	void add(int ammount);
+	void add(int amount);
 
 	template<typename SystemType>
-	typename SystemType::Component* get(int _entity, SystemType* unused=0);
+	typename SystemType::Component* 
+	get(int _entity, SystemType* unused=0);
 	
 	template<typename SystemType>
 	void set(int _entity, typename SystemType::Component* component);
@@ -26,38 +31,36 @@ public:
 	template<typename SystemType>
 	bool has(int _entity, SystemType* unused=0) const;
 
-	//template<typename... Query>
-	//View view() const;
+	/*
+	template<typename PredicateQuery>
+	View<PredicateQuery>* query() 
+	{
+		View<PredicateQuery>* q = new View<PredicateQuery>(this);
+		subscribe(q);
+		return q;
+	}
+	*/
+
+	void subscribe(Entity::ComponentSubscriber* s)
+	{
+		m_subscribers.push_back(s);
+	}
+	int size() { return m_count; } 
 
 private:
 	int m_count;
 	const int m_num_systems;
-
-	std::vector<Component*>* m_component_data;
-	NullComponent* m_null;
+	std::vector<Entity::ComponentSubscriber*> m_subscribers;
+	std::vector<void*>* m_component_data;
 };
 
 template <typename... Inputs>
 EntitySystem::EntitySystem(Index<Inputs...> index)
 	: m_num_systems(sizeof...(Inputs))
 	, m_count(0)
-	, m_null(new NullComponent()) 
 {
 	index.init();
-	m_component_data = new std::vector<Component*>[m_num_systems];
-}
-
-void
-EntitySystem::add(int amount)
-{
-	m_count += amount;
-	for(int i=0; i<m_num_systems; ++i)
-	{
-		for(int j=0; j<amount; ++j)
-		{
-			m_component_data[i].push_back(m_null);
-		}
-	}
+	m_component_data = new std::vector<void*>[m_num_systems];
 }
 
 template<typename SystemType>
@@ -74,11 +77,13 @@ template<typename SystemType>
 void
 EntitySystem::set(int _entity, typename SystemType::Component* component)
 {
+
 	assert(0 <= Index<SystemType>::index);
 	assert(_entity < m_count);
-	if(m_component_data[Index<SystemType>::index][_entity] != m_null)
+	if(m_component_data[Index<SystemType>::index][_entity] != nullptr)
 	{
-		delete m_component_data[Index<SystemType>::index][_entity];
+		delete static_cast<typename SystemType::Component*>(
+			m_component_data[Index<SystemType>::index][_entity]);
 	}
 	m_component_data[Index<SystemType>::index][_entity] = component;
 }
@@ -89,5 +94,7 @@ EntitySystem::has(int _entity, SystemType* unused) const
 {
 	assert(0 <= Index<SystemType>::index);
 	assert(_entity < m_count);
-	return m_component_data[Index<SystemType>::index][_entity] != m_null;
+	return m_component_data[Index<SystemType>::index][_entity] != nullptr;
 }
+
+}//namespace

@@ -3,18 +3,18 @@
 #include <iostream>
 #include <string>
 
-#include "View.h"
+#include "EntitySystem.h"
 
 using namespace std;
-using namespace Entity;
+//using namespace Entity;
 
 TEST(ViewTest,Create)
 {
-	View foo;
-	for(int eid: foo)
+	//View foo;
+	/*for(int eid: foo)
 	{
 		cout << "neat " << eid << endl;
-	}
+	}*/
 /*
 	cout << "Hi" << endl;
 	view->update(0);	
