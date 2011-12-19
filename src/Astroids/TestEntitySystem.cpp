@@ -12,28 +12,19 @@
 using namespace std;
 using namespace Entity;
 
-
-struct FooComponent : public Component
+struct Foo
 {
-	int foo_data;
+	int i;
 };
 
-class FooSystem
+struct Bar
 {
-public:
-	typedef FooComponent Component;
+	double d;
 };
 
-class BarSystem
+struct Baz
 {
-public:
-	typedef FooComponent Component;
-};
-
-class BazSystem
-{
-public:
-	typedef FooComponent Component;
+	string s;
 };
 
 TEST(EntitySystemTest,Index)
@@ -53,47 +44,25 @@ TEST(EntitySystemTest,Index)
 
 TEST(EntitySystemTest,BasicEntityTest)
 {
-	Index<FooSystem, BarSystem> define;
+	Index<Foo, Bar> define;
 	EntitySystem es(define);
 
 	es.create(1);
 
-	ASSERT_FALSE(es.has<FooSystem>(0));
+	ASSERT_FALSE(es.has<Foo>(0));
 	
-	FooComponent* fc = new FooComponent();
-	fc->foo_data = 42;
-	es.set<FooSystem>(0,fc);
+	Foo* fc = new Foo();
+	fc->i = 42;
+	es.set<Foo>(0,fc);
 	
-	ASSERT_TRUE(es.has<FooSystem>(0));
-	ASSERT_EQ(es.get<FooSystem>(0)->foo_data,42);
+	ASSERT_TRUE(es.has<Foo>(0));
+	ASSERT_EQ(es.get<Foo>(0)->i,42);
 
-	FooComponent* ff;
+	Foo* ff;
 	for(int i=0;i<20000000;++i)
 	{	
-		if(es.has<FooSystem>(0) && i%2==1)
-			ff = es.get<FooSystem>(0);
+		if(es.has<Foo>(0) && i%2==1)
+			ff = es.get<Foo>(0);
 	}
-	cout << ff->foo_data << endl;
-}
-
-
-TEST(EntitySystemTest,CrazyQuery2)
-{
-	Index<FooSystem, BarSystem, BazSystem> define;
-	EntitySystem es(define);
-	es.create(1);
-	es.create(1);
-	es.create(1);
-	es.create(1);
-	es.create(1);
-	
-	es.set<BarSystem>(0,new FooComponent());
-
-	//auto fooz = es.query<BarSystem>();
-	es.create(1);
-	es.create(1);
-	//cout << "Fooz: " << fooz->size() << endl;
-	es.create(1);
-	//cout << "Fooz: " << fooz->size() << endl;
-
+	cout << ff->i << endl;
 }

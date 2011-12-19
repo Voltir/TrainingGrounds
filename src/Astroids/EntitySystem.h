@@ -21,26 +21,26 @@ public:
 	
 	void create(int amount);
 
-	template<typename SystemType>
-	typename SystemType::Component* 
-	get(int _entity, SystemType* unused=0);
+	template<typename ComponentType>
+	ComponentType*
+	get(int _entity, ComponentType* unused=0);
 	
-	template<typename SystemType>
-	void set(int _entity, typename SystemType::Component* component);
+	template<typename ComponentType>
+	void set(int _entity, ComponentType* component);
 
-	template<typename SystemType>
-	bool has(int _entity, SystemType* unused=0) const;
+	template<typename ComponentType>
+	bool has(int _entity, ComponentType* unused=0) const;
 
 	void subscribe(Entity::ComponentSubscriber* s)
 	{
 		m_subscribers.push_back(s);
 	}
 
-	int size() const { return m_count; } 
+	int size() const { return m_size; } 
 
 private:
-	int m_count;
-	const int m_num_systems;
+	int m_size;
+	int m_num_systems;
 	std::vector<ComponentSubscriber*> m_subscribers;
 	std::vector<void*>* m_component_data;
 };
@@ -48,50 +48,49 @@ private:
 template <typename... Inputs>
 EntitySystem::EntitySystem(Index<Inputs...> index)
 	: m_num_systems(sizeof...(Inputs))
-	, m_count(0)
+	, m_size(0)
 {
 	index.init();
 	m_component_data = new std::vector<void*>[m_num_systems];
 }
 
-template<typename SystemType>
-typename SystemType::Component*
-EntitySystem::get(int _entity, SystemType* unused)
+template<typename ComponentType>
+ComponentType*
+EntitySystem::get(int _entity, ComponentType* unused)
 {
-	assert(0 <= Index<SystemType>::index);
-	assert(_entity < m_count);
-	return static_cast<typename SystemType::Component*>(
-		m_component_data[Index<SystemType>::index][_entity]);
+	assert(0 <= Index<ComponentType>::index);
+	assert(_entity < m_size);
+	return static_cast<ComponentType*>(
+		m_component_data[Index<ComponentType>::index][_entity]);
 }
 
-template<typename SystemType>
+template<typename ComponentType>
 void
-EntitySystem::set(int _entity, typename SystemType::Component* component)
+EntitySystem::set(int _entity, ComponentType* component)
 {
+	assert(0 <= Index<ComponentType>::index);
+	assert(_entity < m_size);
 
-	assert(0 <= Index<SystemType>::index);
-	assert(_entity < m_count);
-	if(m_component_data[Index<SystemType>::index][_entity] != nullptr)
+	if(m_component_data[Index<ComponentType>::index][_entity] != nullptr)
 	{
-		delete static_cast<typename SystemType::Component*>(
-			m_component_data[Index<SystemType>::index][_entity]);
+		delete static_cast<ComponentType*>(
+			m_component_data[Index<ComponentType>::index][_entity]);
 	}
-	m_component_data[Index<SystemType>::index][_entity] = component;
+	m_component_data[Index<ComponentType>::index][_entity] = component;
 
 	for(auto subscriber: m_subscribers)
 	{
 		subscriber->publishAfterAdd(_entity);
 	}
-
 }
 
-template<typename SystemType>
+template<typename ComponentType>
 bool
-EntitySystem::has(int _entity, SystemType* unused) const
+EntitySystem::has(int _entity, ComponentType* unused) const
 {
-	assert(0 <= Index<SystemType>::index);
-	assert(_entity < m_count);
-	return m_component_data[Index<SystemType>::index][_entity] != nullptr;
+	assert(0 <= Index<ComponentType>::index);
+	assert(_entity < m_size);
+	return m_component_data[Index<ComponentType>::index][_entity] != nullptr;
 }
 
 }//namespace

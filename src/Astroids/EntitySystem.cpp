@@ -9,7 +9,7 @@ namespace Entity
 void
 EntitySystem::create(int amount)
 {
-	m_count += amount;
+	m_size += amount;
 
 	for(int i=0; i<m_num_systems; ++i)
 		for(int j=0; j<amount; ++j)
@@ -17,7 +17,7 @@ EntitySystem::create(int amount)
 	
 	for(int i=amount; 0 < i; --i)
 		for(auto s: m_subscribers)
-			s->publishAfterCreate(m_count - i);
+			s->publishAfterCreate(m_size - i);
 }
 
 }//namespace Entity

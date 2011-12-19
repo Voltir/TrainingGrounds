@@ -9,44 +9,39 @@
 using namespace std;
 using namespace Entity;
 
-struct FooComponent
+struct Foo
 {
-	int foo_data;
+	int i;
 };
 
-class FooSystem
+struct Bar
 {
-public:
-	typedef FooComponent Component;
+	double d;
 };
 
-class BarSystem
+struct Baz
 {
-public:
-	typedef FooComponent Component;
-};
-
-class BazSystem
-{
-public:
-	typedef FooComponent Component;
+	string s;
 };
 
 TEST(EntitySystemTest,PopulateTest)
 {
-	Index<FooSystem, BarSystem, BazSystem> define;
+	Index<Foo, Bar, Baz> define;
 	EntitySystem es(define);
 	es.create(10);
 	
-	es.set<BarSystem>(0,new FooComponent());
+	es.set<Bar>(0,new Bar());
 
-	View<_not<_has<BarSystem>>> v(&es);
+	View<_not<_has<Bar>>> v(&es);
 
-	ASSERT_EQ(distance(v.begin(),v.end()),9);
+	int count = 9;
+
+	ASSERT_EQ(distance(v.begin(),v.end()),count--);
 
 	for(int eid: v)
 	{
-		es.set<BarSystem>(eid,new FooComponent());
+		es.set<Bar>(eid,new Bar());
+		ASSERT_EQ(distance(v.begin(),v.end()),count--);
 	}
 	
 	ASSERT_EQ(distance(v.begin(),v.end()),0);
