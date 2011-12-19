@@ -5,12 +5,13 @@
 
 #include "Component.h"
 #include "EntitySystem.h"
-#include "Crazy.h"
-//#include "View.h"
+//#include "Crazy.h"
+#include "View.h"
 //TODO: Define a constrctor for Index with a single systme...
 
 using namespace std;
 using namespace Entity;
+
 
 struct FooComponent : public Component
 {
@@ -35,9 +36,9 @@ public:
 	typedef FooComponent Component;
 };
 
-
 TEST(EntitySystemTest,Index)
 {
+/*
 	Index<Foo, Bar, Baz, int, double, float> define;
 	define.init();
 
@@ -47,6 +48,7 @@ TEST(EntitySystemTest,Index)
 	ASSERT_EQ(Index<Baz>::index,2);
 	ASSERT_EQ(Index<int>::index,3);
 	ASSERT_EQ(Index<string>::index,-1);
+*/
 }
 
 TEST(EntitySystemTest,BasicEntityTest)
@@ -54,7 +56,7 @@ TEST(EntitySystemTest,BasicEntityTest)
 	Index<FooSystem, BarSystem> define;
 	EntitySystem es(define);
 
-	es.add(1);
+	es.create(1);
 
 	ASSERT_FALSE(es.has<FooSystem>(0));
 	
@@ -74,48 +76,24 @@ TEST(EntitySystemTest,BasicEntityTest)
 	cout << ff->foo_data << endl;
 }
 
-TEST(EntitySystemTest,CrazyQuery)
-{
-	Index<FooSystem, BarSystem, BazSystem> define;
-	EntitySystem es(define);
-	es.add(1);
-	
-	es.set<BarSystem>(0,new FooComponent());
-
-	Whatz w;
-	cout << "OMG: " << 
-		w.query<_and<_has<BarSystem>,_not<_has<FooSystem>>>>(es) << endl;
-
-	//auto fooz = es.query<BarSystem>();
-	es.add(1);
-	es.add(1);
-	//cout << "Fooz: " << fooz->size() << endl;
-	es.add(1);
-	//cout << "Fooz: " << fooz->size() << endl;
-	//delete fooz;
-}
 
 TEST(EntitySystemTest,CrazyQuery2)
 {
 	Index<FooSystem, BarSystem, BazSystem> define;
 	EntitySystem es(define);
-	es.add(1);
-	es.add(1);
-	es.add(1);
-	es.add(1);
-	es.add(1);
+	es.create(1);
+	es.create(1);
+	es.create(1);
+	es.create(1);
+	es.create(1);
 	
 	es.set<BarSystem>(0,new FooComponent());
 
-	Whatz w;
-	cout << "OMG: " << 
-		w.query<_and<_has<BarSystem>,_not<_has<FooSystem>>>>(es) << endl;
-
 	//auto fooz = es.query<BarSystem>();
-	es.add(1);
-	es.add(1);
+	es.create(1);
+	es.create(1);
 	//cout << "Fooz: " << fooz->size() << endl;
-	es.add(1);
+	es.create(1);
 	//cout << "Fooz: " << fooz->size() << endl;
 
 }

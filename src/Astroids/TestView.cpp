@@ -2,31 +2,60 @@
 #include "gtest/gtest.h"
 #include <iostream>
 #include <string>
+#include <algorithm>
 
 #include "EntitySystem.h"
-
+#include "View.h"
 using namespace std;
-//using namespace Entity;
+using namespace Entity;
 
-TEST(ViewTest,Create)
+struct FooComponent
 {
-	//View foo;
-	/*for(int eid: foo)
-	{
-		cout << "neat " << eid << endl;
-	}*/
-/*
-	cout << "Hi" << endl;
-	view->update(0);	
-	view->update(1);	
-	view->update(2);	
-	
-	view->add(0);
-	view->remove(0);
+	int foo_data;
+};
 
-	for(int eid: view)
+class FooSystem
+{
+public:
+	typedef FooComponent Component;
+};
+
+class BarSystem
+{
+public:
+	typedef FooComponent Component;
+};
+
+class BazSystem
+{
+public:
+	typedef FooComponent Component;
+};
+
+TEST(EntitySystemTest,PopulateTest)
+{
+	Index<FooSystem, BarSystem, BazSystem> define;
+	EntitySystem es(define);
+	es.create(10);
+	
+	es.set<BarSystem>(0,new FooComponent());
+
+	View<_not<_has<BarSystem>>> v(&es);
+
+	ASSERT_EQ(distance(v.begin(),v.end()),9);
+
+	for(int eid: v)
 	{
-		cout << eid << endl;
+		es.set<BarSystem>(eid,new FooComponent());
 	}
-*/
-}
+	
+	ASSERT_EQ(distance(v.begin(),v.end()),0);
+
+	es.create(5);
+	
+	int base = 10;
+	for(int eid: v)
+	{
+		ASSERT_EQ(eid,base++);
+	}
+}	

@@ -2,10 +2,10 @@
 
 #include <iostream>
 #include <vector>
+#include <cassert>
+
 #include "Index.h"
 #include "EntitySystemInterface.h"
-#include "View.h"
-#include <cassert>
 
 #define nullptr 0
 
@@ -19,7 +19,7 @@ public:
 	template <typename... Inputs>
 	EntitySystem(Index<Inputs...> index);
 	
-	void add(int amount);
+	void create(int amount);
 
 	template<typename SystemType>
 	typename SystemType::Component* 
@@ -31,26 +31,17 @@ public:
 	template<typename SystemType>
 	bool has(int _entity, SystemType* unused=0) const;
 
-	/*
-	template<typename PredicateQuery>
-	View<PredicateQuery>* query() 
-	{
-		View<PredicateQuery>* q = new View<PredicateQuery>(this);
-		subscribe(q);
-		return q;
-	}
-	*/
-
 	void subscribe(Entity::ComponentSubscriber* s)
 	{
 		m_subscribers.push_back(s);
 	}
-	int size() { return m_count; } 
+
+	int size() const { return m_count; } 
 
 private:
 	int m_count;
 	const int m_num_systems;
-	std::vector<Entity::ComponentSubscriber*> m_subscribers;
+	std::vector<ComponentSubscriber*> m_subscribers;
 	std::vector<void*>* m_component_data;
 };
 
@@ -86,6 +77,12 @@ EntitySystem::set(int _entity, typename SystemType::Component* component)
 			m_component_data[Index<SystemType>::index][_entity]);
 	}
 	m_component_data[Index<SystemType>::index][_entity] = component;
+
+	for(auto subscriber: m_subscribers)
+	{
+		subscriber->publishAfterAdd(_entity);
+	}
+
 }
 
 template<typename SystemType>

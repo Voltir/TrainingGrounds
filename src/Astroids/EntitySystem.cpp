@@ -7,23 +7,17 @@ namespace Entity
 {
 
 void
-EntitySystem::add(int amount)
+EntitySystem::create(int amount)
 {
 	m_count += amount;
-	for(int i=0; i<m_num_systems; ++i)
-	{
-		for(int j=0; j<amount; ++j)
-		{
-			m_component_data[i].push_back(nullptr);
-		}
-	}
 
-	//TODO for each...
-	for(int i=0; i<m_subscribers.size(); ++i)
-	{
-		cout << "omg wat" << m_subscribers[i] << endl;
-		m_subscribers[i]->publish();
-	}
+	for(int i=0; i<m_num_systems; ++i)
+		for(int j=0; j<amount; ++j)
+			m_component_data[i].push_back(nullptr);
+	
+	for(int i=amount; 0 < i; --i)
+		for(auto s: m_subscribers)
+			s->publishAfterCreate(m_count - i);
 }
 
 }//namespace Entity

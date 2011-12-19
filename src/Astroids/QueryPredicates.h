@@ -5,15 +5,17 @@ namespace Entity
 
 class EntitySystem;
 
-/*
 template <typename SystemType>
 struct _has
 {
+
 	static bool evaluate(const EntitySystem* es, int eid)
 	{
 		return es->has<SystemType>(eid);
 	}
+
 };
+
 template <typename PredicateType>
 struct _not
 {
@@ -46,5 +48,5 @@ struct _and<Head>
 		return Head::evaluate(es,eid);
 	}
 };
-*/
+
 }//namespace Entity
