@@ -82,15 +82,6 @@ struct _and<Head>
 	}
 };
 
-struct test
-{
-	template <typename Foo>
-	static bool testr(const Foo& f)
-	{
-		return f.test();
-	}
-};
-
 class Whatz
 {
 public:
