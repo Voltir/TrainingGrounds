@@ -5,6 +5,7 @@
 #include <cassert>
 
 #include "Index.h"
+#include "Definition.h"
 #include "EntitySystemInterface.h"
 
 #define nullptr 0
@@ -31,11 +32,7 @@ public:
 	template<typename ComponentType>
 	bool has(int _entity, ComponentType* unused=0) const;
 
-	void subscribe(Entity::ComponentSubscriber* s)
-	{
-		m_subscribers.push_back(s);
-	}
-
+	void subscribe(Entity::ComponentSubscriber* s);
 	int size() const { return m_size; } 
 
 private:
@@ -52,8 +49,24 @@ EntitySystem::EntitySystem(Index<Inputs...> index)
 {
 	index.init();
 	m_component_data = new std::vector<void*>[m_num_systems];
+
+	//Definition<Inputs...>::allocate(m_dense_data,m_sparse_data);
+}
+/*
+template<typename ComponentType>
+ComponentType*
+EntitySystem::magic(int _entity, Definition<ComponentType>::Dense* unused)
+{
+	cout << "Lol get dense" << endl;
 }
 
+template<typename ComponentType>
+ComponentType*
+EntitySystem::magic(int _entity, Definition<ComponentType>::Sparse* unused)
+{
+	cout << "Lol get sparse" << endl;
+}
+*/
 template<typename ComponentType>
 ComponentType*
 EntitySystem::get(int _entity, ComponentType* unused)
@@ -92,5 +105,5 @@ EntitySystem::has(int _entity, ComponentType* unused) const
 	assert(_entity < m_size);
 	return m_component_data[Index<ComponentType>::index][_entity] != nullptr;
 }
-
+	
 }//namespace

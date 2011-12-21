@@ -20,4 +20,11 @@ EntitySystem::create(int amount)
 			s->publishAfterCreate(m_size - i);
 }
 
+void 
+EntitySystem::subscribe(Entity::ComponentSubscriber* s)
+{
+	m_subscribers.push_back(s);
+}
+
+
 }//namespace Entity

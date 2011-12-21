@@ -64,12 +64,13 @@ public:
 	{
 		using namespace std;
 		cout << "checking " << eid << " -- " << QueryPredicate::evaluate(m_es,eid) << endl;
- 
 		if(QueryPredicate::evaluate(m_es,eid) == false)
 		{
 			auto it = foo.find(eid);
 			if(it != foo.end())
+			{
 				foo.erase(it);
+			}
 		}
 		else 
 		{

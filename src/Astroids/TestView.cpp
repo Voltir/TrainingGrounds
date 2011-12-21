@@ -24,7 +24,7 @@ struct Baz
 	string s;
 };
 
-TEST(EntitySystemTest,PopulateTest)
+TEST(ViewTest,PopulateTest)
 {
 	Index<Foo, Bar, Baz> define;
 	EntitySystem es(define);

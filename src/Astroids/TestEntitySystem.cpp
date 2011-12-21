@@ -42,6 +42,18 @@ TEST(EntitySystemTest,Index)
 */
 }
 
+TEST(EntitySystemTest,DefinitionTest)
+{
+	Definition<_dense<Foo>,_sparse<Bar>,_dense<Baz>> def;
+	def.__generate();
+
+	Definition<Foo>::set(0,new Foo);
+	Definition<Bar>::set(0,new Bar);
+	Definition<Baz>::set(0,new Baz);
+	//Definition<Bar>::set();
+	//Definition<Baz>::set();
+}
+
 TEST(EntitySystemTest,BasicEntityTest)
 {
 	Index<Foo, Bar> define;
