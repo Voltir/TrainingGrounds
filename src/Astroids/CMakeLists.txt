@@ -6,8 +6,14 @@ set(ENTITY_CPP_FILES
 	"EntitySystem.cpp"
 )
 
+set(ENTITY_SYSTEM_TEST_FILES
+	TestTable.cpp
+	#TestEntitySystem.cpp
+	#TestView.cpp
+)
+
 add_executable(TestEntitySystem_pointer TestEntitySystem_pointer.cpp)
-add_executable(TestEntitySystem TestEntitySystem.cpp TestView.cpp ${ENTITY_CPP_FILES})
+add_executable(TestEntitySystem ${ENTITY_SYSTEM_TEST_FILES} ${ENTITY_CPP_FILES})
 
 target_link_libraries(TestEntitySystem_pointer gtest_main)
 target_link_libraries(TestEntitySystem_pointer gtest)

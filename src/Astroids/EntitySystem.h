@@ -5,7 +5,6 @@
 #include <cassert>
 
 #include "Index.h"
-#include "Definition.h"
 #include "EntitySystemInterface.h"
 
 #define nullptr 0
@@ -33,6 +32,8 @@ public:
 	bool has(int _entity, ComponentType* unused=0) const;
 
 	void subscribe(Entity::ComponentSubscriber* s);
+
+	//size doesnt make sense. Could we do something else?
 	int size() const { return m_size; } 
 
 private:
