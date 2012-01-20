@@ -24,6 +24,10 @@ public:
 	virtual ComponentT* get(const eid<tag>& e) =0;
 	virtual void set(const eid<tag>& e, ComponentT* component) =0;
 	virtual bool has(const eid<tag>& e) const =0;
+
+	//Might want to use private virtual template-method thing here
+	virtual void registerSetHook(
+		std::function<void(eid<tag> e, ComponentType* c)> fn) {}
 };
 
 /****** Dense Definition ******/
@@ -35,7 +39,7 @@ class DenseComponentStore
 public:
 	virtual ~DenseComponentStore();
 	virtual void create(int amount);
-	virtual ComponentT* get(const eid<tag>& e);
+	virtual ComponentT* get(const eid<ugttag>& e);
 	virtual void set(const eid<tag>& e, ComponentT* component);
 	virtual bool has(const eid<tag>& e) const;
 	std::vector<ComponentT*> m_data;

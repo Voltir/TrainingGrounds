@@ -1,0 +1,169 @@
+%\documentclass[paper=a4,
+%11pt,
+%DIV=14,
+%parskip=half]{scrartcl}
+%\documentclass[11pt,a4paper,DIV=14]{article}
+\documentclass[11pt,a4paper]{article}
+
+%\usepackage[utf8]{inputenc}
+\usepackage{tikz}
+\usepackage{lipsum}
+\usepackage{color}
+\usepackage{helvet}
+\usepackage{fancyhdr}
+\usepackage{verbatim}
+\usepackage[top=1.55cm,bottom=5cm,left=1.6cm,right=1.47cm]{geometry}
+
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\newcommand{\executeiffilenewer}[3]{
+\ifnum\pdfstrcmp{\pdffilemoddate{#1}}
+{\pdffilemoddate{#2}}>0
+{\immediate\write18{#3}}\fi
+}
+
+\newcommand{\includesvg}[1]
+{
+	\IfFileExists{#1.pdf}
+	{
+		\executeiffilenewer{#1.svg}{#1.pdf}
+		{
+			inkscape -z -D --file=#1.svg --export-pdf=#1.pdf --export-latex
+		}
+	}
+	{
+		\immediate\write18
+		{
+			inkscape -z -D --file=#1.svg --export-pdf=#1.pdf --export-latex
+		}
+	}
+	\input{#1.pdf_tex}
+}
+
+\fancypagestyle{shadowlabs}
+{
+\fancyhf{}
+
+\renewcommand{\headheight}{2.1cm}
+\renewcommand{\footskip}{2.5cm}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\fancyhead[L]{\includegraphics[width=2cm]{hp-logo.png}}
+\fancyhead[R]{HP Fortify Shadowlabs}
+
+\fancyfoot[L]{\includegraphics[width=2cm]{hp-logo.png}}
+\fancyfoot[C]{PROPRIETARY AND CONFIDENTIAL}
+\fancyfoot[R]{\thepage}
+%\fancyhead[R]
+%{
+%	\begin{tikzpicture}[remember picture,overlay]
+%	\coordinate [below=1.5cm] (wat) at (current page.north);
+%	\node [name=hdr,
+%		anchor=base,
+%		fill=black,
+%		text=green,
+%		minimum width=\paperwidth,
+%		minimum height=2.1cm] at (wat){\huge{\textsf{Shadow Labs}}};
+%	\end{tikzpicture}
+%}
+}
+\begin{document}
+
+\pagestyle{shadowlabs}
+
+\begin{titlepage}.
+%Use the tikzpicture for the document banner
+\begin{tikzpicture}[remember picture,overlay]
+\coordinate [below=4cm] (midpoint) at (current page.north);
+\node [name=titlebar,
+anchor=base,
+fill=black,
+text=red,
+minimum width=\paperwidth,
+minimum height=4.1cm] at (midpoint){\huge{\textsf{[Shadow Lab Banner]}}};
+
+% Define the point where the logo will go
+\coordinate [right=3cm] (logo) at (titlebar.west);
+
+% Set coordinate system origin
+\begin{scope}[shift=(logo)]
+\node {\includegraphics[width=4cm]{HP.png}};
+\end{scope}
+\end{tikzpicture}
+
+\vspace{6cm}
+\begin{center}
+\Huge{Foo \& Bar}\\[1.5cm]
+\textsc{\Large Total Pwn Assesment}\\[0.5cm]
+\HRule \\
+\huge \bfseries n00b App
+\HRule
+
+\vfill
+
+{\large \today}
+\end{center}
+
+\end{titlepage}
+
+%\begin{comment}
+\tableofcontents
+\newpage
+
+\section{Executive Summary}
+\subsection{Overview}
+
+\begin{figure}[htb]
+\centering
+\def\svgwidth{\textwidth}
+%\input{chart.pdf_tex}
+\includesvg{chart}
+\caption{\label{fig:chart}A Chart.}
+\end{figure}
+
+\lipsum
+\subsection{Mobile Testing Types Performed}
+\lipsum
+\subsection{Summary Findings Chart}
+\lipsum
+\subsection{Vulnerability Listing Chart}
+\lipsum
+\subsection{Data Exposure Table}
+\lipsum
+\subsection{Strategic Next Steps and Best Practices}
+\lipsum
+
+\section{Application Architecture}
+\subsection{Functionality}
+\lipsum
+\subsection{Diagram}
+\lipsum
+\subsection{Authentication}
+\lipsum
+
+\section{Detailed Findings}
+\subsection{Critical Flaw A}
+\lipsum
+\subsection{Critical Flaw B}
+\lipsum
+\subsection{Critical Flaw C}
+\lipsum
+
+\section{Appendices}
+\subsection{Report Artifacts}
+\lipsum
+\subsection{Risk Classification}
+\lipsum
+\subsection{Notes Conventions}
+\lipsum
+
+\section{Questions and Contact}
+\subsection{Project Manager}
+\lipsum
+\subsection{Practice Principal}
+\lipsum
+
+%\end{comment}
+
+
+\end{document}
+

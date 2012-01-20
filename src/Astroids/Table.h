@@ -37,15 +37,27 @@ public:
 	bool 
 	has(eid<tag> id, ComponentType* unused=0) const;
 
-	/*
-	//void subscribe(Entity::ComponentSubscriber* s);
+	template<typename ComponentType>
+	void 
+	registerSetHook(std::function<void(eid<tag> e, ComponentType* c)> fn);
 
+	/*
+	template<typename ComponentType>
+	void 
+	hookGet(std::function<void(eid<tag> e)> fn);
+	*/
+
+	//void hookHas?
+	//void hookCreate?
+
+	/*
 	//size doesnt make sense. Could we do something else?
 	//int size() const { return m_size; } 
 	*/
 
 private:
-	std::vector<void*> m_store;
+	std::vector<ComponentStore*> m_store;
+	function<void(eid<test>,Foo*)> lolz = [](eid<test> e, Foo* component);
 };
 
 

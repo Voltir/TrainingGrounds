@@ -2,6 +2,7 @@
 #include "gtest/gtest.h"
 #include <iostream>
 #include <string>
+#include <functional>
 
 #include "Table.h"
 #include "Definition.h"
@@ -68,7 +69,19 @@ TEST(TableTest,ExpectedUsageTest)
 	ASSERT_EQ(wat.get<Foo>(a)->i,42);
 }
 
+TEST(TableTest,HookingTableTest)
+{
+	
+	Definition<test,_dense<Foo>,_dense<Bar>,_dense<Baz>> def;
+	Table<test> table(def);
 
+	table.create(10);
+
+	//table.hookSet<Foo>(
+	//	[](eid<testing> e, Foo* component) { cout << "Omg nice: " << e << endl; }
+	//);
+	function<void(eid<test>,Foo*)> lolz = [](eid<test> e, Foo* component) { cout << "Omg nice: " << e << endl; };
+}
 /**** Internal testing follows, not really for usage details ****/
 
 TEST(TableTest,EidTest)

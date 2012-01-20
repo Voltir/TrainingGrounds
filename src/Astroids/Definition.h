@@ -5,6 +5,7 @@
 
 namespace Entity
 {
+
 template<typename tag, typename ComponentT>
 struct Index
 {
@@ -25,7 +26,7 @@ template <typename tag, typename HeadT, typename... TailT>
 struct Definition<tag, HeadT, TailT...>
 {
 	//as in python, "__" means private but not really.
-	void __generate(std::vector<void*>& store)
+	void __generate(std::vector<ComponentStore*>& store)
 	{
 		Definition<tag,HeadT> head;
 		head.__generate(store);
@@ -37,13 +38,13 @@ struct Definition<tag, HeadT, TailT...>
 template <typename tag, typename ComponentT>
 struct Definition<tag, _dense<ComponentT>>
 {
-	void __generate(std::vector<void*>& store)
+	void __generate(std::vector<ComponentStore*>& store)
 	{
 		store.push_back(new DenseComponentStore<tag,ComponentT>());
 		Index<tag,ComponentT>::index = store.size() - 1;
 	}
 };
-/*
+
 template <typename tag, typename ComponentT>
 struct Definition<tag, _sparse<ComponentT>>
 {
@@ -53,7 +54,7 @@ struct Definition<tag, _sparse<ComponentT>>
 		Index<tag,ComponentT>::index = store.size() - 1;
 	}
 };
-*/
+
 /*
 template <typename tag, typename ComponentT> struct Xyzzy
 {

@@ -60,3 +60,14 @@ Table<tag>::has(eid<tag> id, ComponentT* unused) const
 			m_store[Index<tag,ComponentT>::index]);
 	return acc->has(id);
 }
+
+template<typename tag>
+template<typename ComponentT>
+void 
+Table<tag>::registerSetHook(std::function<void(eid<tag> e, ComponentType* c)> fn)
+{
+	Accessor<tag,ComponentT>* acc = 
+		static_cast<Accessor<tag,ComponentT>*>(
+			m_store[Index<tag,ComponentT>::index]);
+	acc->registerSetHook(fn);
+}
