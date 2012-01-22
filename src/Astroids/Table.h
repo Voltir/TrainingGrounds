@@ -57,7 +57,6 @@ public:
 
 private:
 	std::vector<ComponentStore*> m_store;
-	function<void(eid<test>,Foo*)> lolz = [](eid<test> e, Foo* component);
 };
 
 

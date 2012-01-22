@@ -64,7 +64,7 @@ Table<tag>::has(eid<tag> id, ComponentT* unused) const
 template<typename tag>
 template<typename ComponentT>
 void 
-Table<tag>::registerSetHook(std::function<void(eid<tag> e, ComponentType* c)> fn)
+Table<tag>::registerSetHook(std::function<void(eid<tag> e, ComponentT* c)> fn)
 {
 	Accessor<tag,ComponentT>* acc = 
 		static_cast<Accessor<tag,ComponentT>*>(
