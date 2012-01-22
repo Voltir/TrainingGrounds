@@ -50,7 +50,8 @@ struct Definition<tag, _sparse<ComponentT>>
 {
 	void __generate(std::vector<void*>& store)
 	{
-		store.push_back(new SparseComponentStore<tag,ComponentT>());
+		//store.push_back(new SparseComponentStore<tag,ComponentT>());
+		store.push_back(new DenseComponentStore<tag,ComponentT>());
 		Index<tag,ComponentT>::index = store.size() - 1;
 	}
 };

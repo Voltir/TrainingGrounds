@@ -76,12 +76,20 @@ TEST(TableTest,HookingTableTest)
 	Table<test> table(def);
 
 	table.create(10);
+	eid<test> a(0);
+	eid<test> b(1);
+	eid<test> c(2);
 
-	//table.hookSet<Foo>(
-	//	[](eid<testing> e, Foo* component) { cout << "Omg nice: " << e << endl; }
-	//);
-	function<void(eid<test>,Foo*)> lolz = [](eid<test> e, Foo* component) { cout << "Omg nice: " << e << endl; };
+	int count = 0;
+	table.registerSetHook<Foo>([&count](eid<test> e, Foo* component) { count++; });
+
+	ASSERT_EQ(count,0);
+	table.set<Foo>(a,new Foo());
+	table.set<Foo>(b,new Foo());
+	table.set<Foo>(c,new Foo());
+	ASSERT_EQ(count,3);
 }
+
 /**** Internal testing follows, not really for usage details ****/
 
 TEST(TableTest,EidTest)

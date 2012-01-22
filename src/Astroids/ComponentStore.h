@@ -8,6 +8,7 @@
 namespace Entity
 {
 
+
 class ComponentStore
 {
 public:
@@ -20,15 +21,45 @@ class Accessor : public ComponentStore
 {
 public:
 	virtual ~Accessor(){}
-	virtual void create(int amount) =0;
-	virtual ComponentT* get(const eid<tag>& e) =0;
-	virtual void set(const eid<tag>& e, ComponentT* component) =0;
-	virtual bool has(const eid<tag>& e) const =0;
+	
+	void create(int amount) { this->createImpl(amount); }
+	ComponentT* get(const eid<tag>& e) { return this->getImpl(e); }
+	void set(const eid<tag>& e, ComponentT* component);
+	bool has(const eid<tag>& e) const { return this->hasImpl(e); }
 
-	//Might want to use private virtual template-method thing here
-	virtual void registerSetHook(
-		std::function<void(eid<tag> e, ComponentT* c)> fn) {}
+	int registerSetHook(std::function<void(eid<tag> e, ComponentT* c)> fn);
+	void unregisterSetHook(int hook_id);
+
+private:
+	virtual void createImpl(int amount) =0;
+	virtual ComponentT* getImpl(const eid<tag>& e) =0;
+	virtual void setImpl(const eid<tag>& e, ComponentT* component) =0;
+	virtual bool hasImpl(const eid<tag>& e) const =0;
+
+	std::vector<std::function<void(eid<tag> e, ComponentT* c)>> m_set_hooks;
 };
+
+template <typename tag, typename ComponentT>
+void Accessor<tag,ComponentT>::set(const eid<tag>& e, ComponentT* component)
+{
+	for(auto hook : m_set_hooks)
+	{
+		hook(e,component);
+	}
+	this->setImpl(e,component);
+}
+
+template <typename tag, typename ComponentT>
+int Accessor<tag,ComponentT>::registerSetHook(std::function<void(eid<tag> e, ComponentT* c)> hook)
+{
+	m_set_hooks.push_back(hook);
+}
+
+template <typename tag, typename ComponentT>
+void Accessor<tag,ComponentT>::unregisterSetHook(int hook_id)
+{
+	m_set_hooks.erase(m_set_hooks.begin()+hook_id);
+}
 
 /****** Dense Definition ******/
 
@@ -38,10 +69,12 @@ class DenseComponentStore
 {
 public:
 	virtual ~DenseComponentStore();
-	virtual void create(int amount);
-	virtual ComponentT* get(const eid<tag>& e);
-	virtual void set(const eid<tag>& e, ComponentT* component);
-	virtual bool has(const eid<tag>& e) const;
+
+	virtual void createImpl(int amount);
+	virtual ComponentT* getImpl(const eid<tag>& e);
+	virtual void setImpl(const eid<tag>& e, ComponentT* component);
+	virtual bool hasImpl(const eid<tag>& e) const;
+
 	std::vector<ComponentT*> m_data;
 };
 
@@ -57,7 +90,7 @@ DenseComponentStore<tag,ComponentT>::~DenseComponentStore()
 }
 
 template <typename tag, typename ComponentT>
-void DenseComponentStore<tag,ComponentT>::create(int amount)
+void DenseComponentStore<tag,ComponentT>::createImpl(int amount)
 {
 	using namespace std;
 	for(int i=0; i<amount; ++i)
@@ -68,28 +101,28 @@ void DenseComponentStore<tag,ComponentT>::create(int amount)
 
 template <typename tag, typename ComponentT>
 ComponentT* 
-DenseComponentStore<tag,ComponentT>::get(const eid<tag>& e)
+DenseComponentStore<tag,ComponentT>::getImpl(const eid<tag>& e)
 {
 	assert(e < m_data.size());
 	return m_data[e];
 }
 
 template <typename tag, typename ComponentT>
-void DenseComponentStore<tag,ComponentT>::set(const eid<tag>& e, ComponentT* component)
+void DenseComponentStore<tag,ComponentT>::setImpl(const eid<tag>& e, ComponentT* component)
 {
 	assert(e < m_data.size());
 	m_data[e] = component;
 }
 
 template <typename tag, typename ComponentT>
-bool DenseComponentStore<tag,ComponentT>::has(const eid<tag>& e) const
+bool DenseComponentStore<tag,ComponentT>::hasImpl(const eid<tag>& e) const
 {
 	assert(e < m_data.size());
 	return m_data[e] != NULL;
 }
 
 /****** Sparse Definition ******/
-
+/*
 template <typename tag, typename ComponentT> 
 class SparseComponentStore 
 	: public Accessor<tag,ComponentT>
@@ -115,5 +148,5 @@ void SparseComponentStore<tag,ComponentT>::set(const eid<tag>& e, ComponentT* co
 	using namespace std;
 	cout << "SET SPARSE" << endl;
 }
-
+*/
 }//namespace
