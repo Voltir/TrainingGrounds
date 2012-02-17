@@ -26,6 +26,13 @@ void Table<tag>::create(int amount)
 	{
 		static_cast<ComponentStore*>(cs)->create(amount);
 	}
+
+	//Meh -- using a set<int> for now
+	int base = m_foo.size();
+	for(int i=0; i<amount; ++i)
+	{
+		m_foo.insert(eid<tag>(base+i));
+	}
 }
 
 template<typename tag>

@@ -9,7 +9,7 @@ set(ENTITY_CPP_FILES
 set(ENTITY_SYSTEM_TEST_FILES
 	TestTable.cpp
 	#TestEntitySystem.cpp
-	#TestView.cpp
+	TestView.cpp
 )
 
 add_executable(TestEntitySystem_pointer TestEntitySystem_pointer.cpp)

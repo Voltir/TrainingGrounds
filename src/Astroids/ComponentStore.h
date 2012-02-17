@@ -42,11 +42,12 @@ private:
 template <typename tag, typename ComponentT>
 void Accessor<tag,ComponentT>::set(const eid<tag>& e, ComponentT* component)
 {
+	this->setImpl(e,component);
+
 	for(auto hook : m_set_hooks)
 	{
 		hook(e,component);
 	}
-	this->setImpl(e,component);
 }
 
 template <typename tag, typename ComponentT>

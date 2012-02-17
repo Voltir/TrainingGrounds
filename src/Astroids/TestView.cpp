@@ -6,6 +6,7 @@
 
 #include "EntitySystem.h"
 #include "View.h"
+#include "QueryPredicates.h"
 using namespace std;
 using namespace Entity;
 
@@ -24,35 +25,36 @@ struct Baz
 	string s;
 };
 
+class vtest {} ;
+
 TEST(ViewTest,PopulateTest)
 {
-/*
-	Index<Foo, Bar, Baz> define;
-	EntitySystem es(define);
-	es.create(10);
+	Definition<vtest,_dense<Foo>,_dense<Bar>,_dense<Baz>> def;
+	Table<vtest> table(def);
+	table.create(10);
+
+	eid<vtest> a(0);
+	table.set<Bar>(a,new Bar());
+
+	View<vtest,_not<_has<Bar>>> v(&table);
 	
-	es.set<Bar>(0,new Bar());
-
-	View<_not<_has<Bar>>> v(&es);
-
 	int count = 9;
-
+	
 	ASSERT_EQ(distance(v.begin(),v.end()),count--);
-
-	for(int eid: v)
+	
+	for(eid<vtest> e: v)
 	{
-		es.set<Bar>(eid,new Bar());
+		table.set<Bar>(e,new Bar());
 		ASSERT_EQ(distance(v.begin(),v.end()),count--);
 	}
 	
 	ASSERT_EQ(distance(v.begin(),v.end()),0);
 
-	es.create(5);
+	table.create(5);
 	
 	int base = 10;
-	for(int eid: v)
+	for(eid<vtest> e: v)
 	{
-		ASSERT_EQ(eid,base++);
+		ASSERT_EQ(e,base++);
 	}
-*/
 }	

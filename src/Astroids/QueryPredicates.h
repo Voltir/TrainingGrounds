@@ -1,17 +1,32 @@
 #pragma once
 
+#include "Eid.h"
+#include "Definition.h"
+#include "Table.h"
+#include "View.h"
+
 namespace Entity
 {
 
-class EntitySystem;
+//class EntitySystem;
 
-//Has Predicate -- this is used to directly wrap a SystemType
-template <typename SystemType>
+//Has Predicate -- this is used to directly wrap a ComponentType
+template <typename ComponentType>
 struct _has
 {
-	static bool evaluate(const EntitySystem* es, int eid)
+	template<typename tag>
+	static bool evaluate(const Table<tag>* table, eid<tag> e)
 	{
-		return es->has<SystemType>(eid);
+		return table->has(e,static_cast<ComponentType*>(NULL));
+	}
+
+	template <typename tag, typename QueryPredicate>
+	static void registerSetHook(
+		Table<tag>* table, 
+		View<tag,QueryPredicate>* view)
+	{
+		auto h = view->makeSetHook(static_cast<ComponentType*>(NULL));
+		table->registerSetHook<ComponentType>(h);
 	}
 };
 
@@ -19,12 +34,22 @@ struct _has
 template <typename PredicateType>
 struct _not
 {
-	static bool evaluate(const EntitySystem* es, int eid)
+	template<typename tag>
+	static bool evaluate(const Table<tag>* table, eid<tag> e)
 	{
-		return !PredicateType::evaluate(es,eid);
+		return !PredicateType::evaluate(table,e);
+	}
+	
+	template <typename tag, typename QueryPredicate>
+	static void registerSetHook(
+		Table<tag>* table, 
+		View<tag,QueryPredicate>* view)
+	{
+		PredicateType::registerSetHook(table,view);
 	}
 };
 
+/*
 //And Predicate
 template <typename... Predicates>
 struct _and
@@ -49,5 +74,5 @@ struct _and<Head>
 		return Head::evaluate(es,eid);
 	}
 };
-
+*/
 }//namespace Entity

@@ -16,7 +16,6 @@ class Table
 {
 
 public:
-	
 	template <typename... Inputs>
 	Table(Definition<tag,Inputs...> def);
 
@@ -55,8 +54,12 @@ public:
 	//int size() const { return m_size; } 
 	*/
 
+	typename std::set<eid<tag>>::iterator begin() { return m_foo.begin(); }
+    typename std::set<eid<tag>>::iterator end() { return m_foo.end(); }	
+
 private:
 	std::vector<ComponentStore*> m_store;
+	std::set<eid<tag>> m_foo;
 };
 
 
